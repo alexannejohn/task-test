@@ -15,13 +15,14 @@
 class Task(object):
 
     def __init__(self, name):
-        self._id = 0
+        self._id = id(self)
         self._name = name
         self._value = None
         self._completed = False
 
     def complete(self):
-        _completed = True
+        self._value = self.num_substring('ccn', self.name)
+        self._completed = True
 
     @property
     def is_completed(self):
@@ -38,6 +39,14 @@ class Task(object):
     @property
     def value(self):
         return self._value
+
+    def num_substring(self, sub, whole):
+        count = 0
+        whole_lower = whole.lower()
+        while (sub in whole_lower):
+            whole_lower = whole_lower.replace('ccn', '', 1)
+            count = count + 1
+        return count
 
 
 # This class cannot be edited directly
@@ -59,3 +68,20 @@ class TaskManager(object):
     def remove_tasks(self):
         while len(self.tasks) > 0:
             self.tasks.pop()
+
+
+class TaskManager(TaskManager):
+            
+    def complete_tasks(self):
+        if len(self.tasks) > 0:
+            if not all([task.is_completed for task in self.tasks]):
+                for task in self.tasks:
+                    if not task.is_completed:
+                        task.complete()
+                        print('task (id: {tid}) {name} completed with value {value}'.format(name=task.name, value=task.value, tid=task.id))
+    
+    def remove_task (self, id):
+        if len(self.tasks) > 0:
+            for task in self.tasks:
+                if task._id == id:
+                    self.tasks.remove(task)
